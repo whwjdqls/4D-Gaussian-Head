@@ -539,7 +539,7 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
             T = dataset.data['world_mats'][i][:,3].numpy(), # extrinsic의 t 저장 : 3dgs format
             FovX = focal2fov(dataset.intrinsics[0,0].item(), dataset.img_res[1]),
             FovY = focal2fov(dataset.intrinsics[1,1].item(), dataset.img_res[0]),
-            image = Image.open(dataset.data['image_paths'][i]),
+            image = PILtoTorch(Image.open(dataset.data['image_paths'][i]), None),
             image_path = dataset.data['image_paths'][i],
             image_name = dataset.data['img_name'][i],
             width = dataset.img_res[1],
