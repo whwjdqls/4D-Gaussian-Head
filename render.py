@@ -23,6 +23,7 @@ from argparse import ArgumentParser
 from arguments import ModelParams, PipelineParams, get_combined_args, ModelHiddenParams
 from gaussian_renderer import GaussianModel
 from time import time
+import glob
 to8b = lambda x : (255*np.clip(x.cpu().numpy(),0,1)).astype(np.uint8)
 def render_set(model_path, name, iteration, views, gaussians, pipeline, background):
     render_path = os.path.join(model_path, name, "ours_{}".format(iteration), "renders")
@@ -59,8 +60,19 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
         for image in tqdm(render_list):
             torchvision.utils.save_image(image, os.path.join(render_path, '{0:05d}'.format(count) + ".png"))
             count +=1
+    # JB BUGGG TypeError: write() got an unexpected keyword argument 'fps' #
+    # imageio.mimwrite(os.path.join(model_path, name, "ours_{}".format(iteration), 'video_rgb.mp4'), render_images, fps=30, quality=8)
+    print("make video by running: ffmpeg -framerate 30 -i %05d.png -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p video_rgb.mp4")
+
+    for file in png_files:
+        # Read the image
+        im = imageio.imread(file)        
+        writer.append_data(im)
+    # Close the video writer
+    writer.close()
+    print(f"Video created: {video_file_path}")
     
-    imageio.mimwrite(os.path.join(model_path, name, "ours_{}".format(iteration), 'video_rgb.mp4'), render_images, fps=30, quality=8)
+    
 def render_sets(dataset : ModelParams, hyperparam, iteration : int, pipeline : PipelineParams, skip_train : bool, skip_test : bool, skip_video: bool):
     with torch.no_grad():
         gaussians = GaussianModel(dataset.sh_degree, hyperparam)

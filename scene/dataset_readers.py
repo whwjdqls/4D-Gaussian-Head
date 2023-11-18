@@ -391,7 +391,7 @@ def format_infos(dataset,split):
 def readHyperDataInfos(datadir,use_bg_points,eval):
     train_cam_infos = Load_hyper_data(datadir,0.5,use_bg_points,split ="train")
     test_cam_infos = Load_hyper_data(datadir,0.5,use_bg_points,split="test")
-
+    
     train_cam = format_hyper_data(train_cam_infos,"train")
     max_time = train_cam_infos.max_time
     video_cam_infos = copy.deepcopy(test_cam_infos)
