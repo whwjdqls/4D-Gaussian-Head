@@ -51,6 +51,9 @@ class Scene:
             scene_info = sceneLoadTypeCallbacks["dynerf"](args.source_path, args.white_background, args.eval)
         elif os.path.exists(os.path.join(args.source_path,"dataset.json")):
             scene_info = sceneLoadTypeCallbacks["nerfies"](args.source_path, False, args.eval)
+        elif os.path.exists(os.path.join(args.source_path, "yufeng")):
+            print("Found yufeng folder, assuming IMAvatar set!")
+            scene_info = sceneLoadTypeCallbacks["IMAvatar"](args.source_path, test_sample_rate = None, use_mean_expression = False, maxtime = 300)
         else:
             assert False, "Could not recognize scene type!"
         self.maxtime = scene_info.maxtime
