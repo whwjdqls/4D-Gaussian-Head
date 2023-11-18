@@ -28,6 +28,9 @@ from utils.sh_utils import SH2RGB
 from scene.gaussian_model import BasicPointCloud
 from utils.general_utils import PILtoTorch
 from tqdm import tqdm
+
+from flame import FLAME, get_config
+
 class CameraInfo(NamedTuple):
     uid: int
     R: np.array
@@ -40,6 +43,23 @@ class CameraInfo(NamedTuple):
     width: int
     height: int
     time : float
+
+class CameraInfo_Flame(NamedTuple):
+    uid: int
+    R: np.array
+    T: np.array
+    FovY: np.array
+    FovX: np.array
+    image: np.array
+    image_path: str
+    image_name: str
+    width: int
+    height: int
+    object_mask : np.array
+    flame_pose : np.array
+    flame_expression : np.array
+    flame_shape : np.array
+    time : float
    
 class SceneInfo(NamedTuple):
     point_cloud: BasicPointCloud
@@ -49,6 +69,15 @@ class SceneInfo(NamedTuple):
     nerf_normalization: dict
     ply_path: str
     maxtime: int
+
+class SceneInfo_Flame(NamedTuple):
+    point_cloud: BasicPointCloud
+    train_cameras: list
+    test_cameras: list
+    nerf_normalization: dict
+    ply_path: str
+    flame_shape : np.array
+    maxtime : int
 
 def getNerfppNorm(cam_info):
     def get_center_and_diag(cam_centers):
@@ -473,9 +502,132 @@ def readdynerfInfo(datadir,use_bg_points,eval):
                            maxtime=300
                            )
     return scene_info
+
+def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810'], test_sample_rate = None, ply_path = None, use_mean_globalrotpose = True, use_mean_expression = False,maxtime = 300,device = 'cuda'):
+
+    dataset = FaceDataset(
+        data_folder = data_path,
+        subject_name = 'yufeng',
+        json_name = 'flame_params.json',
+        sub_dir = sub_dir,
+        img_res = [512,512],
+        is_eval = False,
+        subsample=1,
+        hard_mask=False,
+        only_json=False,
+        use_mean_expression=True,
+        use_var_expression=False,
+        use_background=False,
+        load_images=True,
+        )
+
+
+    train_cam_infos = []
+    test_cam_infos = []
+    data_num = len(dataset.data['img_name'])
+    # If No test Set
+    if test_sample_rate == None or test_sample_rate == 0:
+        test_sample_rate = data_num+ 1 
+    
+
+    for i in range(data_num):
+        # 코드 주석에, cam_pose = world_mat = extrinsic!
+        cam_info = CameraInfo_Flame(
+            uid = 1, 
+            R = dataset.data['world_mats'][i][:,:3].T.numpy(),  # extrinsic의 R 저장 : 3dgs format
+            T = dataset.data['world_mats'][i][:,3].numpy(), # extrinsic의 t 저장 : 3dgs format
+            FovX = focal2fov(dataset.intrinsics[0,0].item(), dataset.img_res[1]),
+            FovY = focal2fov(dataset.intrinsics[1,1].item(), dataset.img_res[0]),
+            image = Image.open(dataset.data['image_paths'][i]),
+            image_path = dataset.data['image_paths'][i],
+            image_name = dataset.data['img_name'][i],
+            width = dataset.img_res[1],
+            height = dataset.img_res[0],
+            object_mask = dataset.data['masks'][i].reshape(dataset.img_res).numpy(),
+            flame_pose = dataset.data['flame_pose'][i].numpy(),
+            flame_expression = dataset.data['expressions'][i].numpy(),
+            flame_shape = dataset.shape_params.numpy(),
+            time = float(i) /float(data_num)
+        )
+        # Test set sample
+        if (i+1) % test_sample_rate != 0:
+            train_cam_infos += [cam_info]
+        else:
+            test_cam_infos += [cam_info]
+        
+    nerf_normalization = getNerfppNorm(train_cam_infos)
+
+    # pcd init
+    if ply_path == None:
+        ply_path = dataset.gt_dir + '/point_cloud.ply'
+        
+    if os.path.exists(ply_path):
+        pcd = fetchPly(ply_path)
+    else: # point cloud init w/ flame
+        print("no ply file, init with flame")
+
+        # pose_param(global rotation) : mean or zero 
+        if use_mean_globalrotpose:
+            pose_params = torch.zeros_like(dataset.data['flame_pose'][:1])
+            pose_params[:,:3] = dataset.data['flame_pose'].mean(dim=0,keepdim = True)[:,:3] # Pose param 중에 global rot 만 mean으로 init!!!
+        else:
+            pose_params = torch.zeros_like(dataset.data['flame_pose'])
+        # expression param : mean or zero
+        if use_mean_expression:
+            expression_params = dataset.mean_expression
+        else:
+            expression_params = torch.zeros_like(dataset.mean_expression)
+        
+        # IMavatar flameshape = fullpose (dim=15)
+        # FLAME 코드 기준으로 쪼개서 넣어주었음...!(flame.py line 254)
+        # Flame 선언: batch_size = 1
+        config = get_config()
+        flame = FLAME(config).to(device)
+        with torch.no_grad():
+            flame.eval()
+            vertices, _ = flame(
+                shape_params=dataset.shape_params.to(device),
+                expression_params=expression_params.to(device),
+                pose_params=pose_params[:,[0,1,2, 6,7,8]].to(device),
+                neck_pose=pose_params[:, 3:6].to(device),
+                eye_pose=pose_params[:, 9:].to(device),
+                transl=None,
+            )
+        flame.cpu()
+        # Vertex!
+        vertices = vertices.squeeze(0).detach().cpu().numpy()
+        # color random init
+        shs = np.random.random((vertices.shape[0],3)) /255.0
+        pcd = BasicPointCloud(
+            points=vertices,
+            colors=SH2RGB(shs),
+            normals=np.zeros((vertices.shape[0], 3))
+        )
+
+        # save ply
+        print(f"Creating Initial Point Cloud file on {ply_path}")
+        storePly(ply_path, vertices, SH2RGB(shs) * 255)
+
+
+    
+
+    scene_info = SceneInfo_Flame(
+        point_cloud=pcd,
+        train_cameras=train_cam_infos,
+        test_cameras=test_cam_infos,
+        nerf_normalization=nerf_normalization,
+        ply_path=ply_path,
+        flame_shape = dataset.shape_params.numpy(), # Flame shape parameter in scene info!
+        maxtime = maxtime
+        )
+    
+    return scene_info
+
 sceneLoadTypeCallbacks = {
     "Colmap": readColmapSceneInfo,
     "Blender" : readNerfSyntheticInfo,
     "dynerf" : readdynerfInfo,
+    "IMAvatar" : readIMAvatarInfo,
     "nerfies": readHyperDataInfos,  # NeRFies & HyperNeRF dataset proposed by [https://github.com/google/hypernerf/releases/tag/v0.1]
+
 }
