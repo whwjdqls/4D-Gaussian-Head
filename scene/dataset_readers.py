@@ -74,6 +74,7 @@ class SceneInfo_Flame(NamedTuple):
     point_cloud: BasicPointCloud
     train_cameras: list
     test_cameras: list
+    video_cameras: list
     nerf_normalization: dict
     ply_path: str
     flame_shape : np.array
@@ -609,12 +610,12 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
         storePly(ply_path, vertices, SH2RGB(shs) * 255)
 
 
-    
 
     scene_info = SceneInfo_Flame(
         point_cloud=pcd,
         train_cameras=train_cam_infos,
         test_cameras=test_cam_infos,
+        video_cameras=train_cam_infos,
         nerf_normalization=nerf_normalization,
         ply_path=ply_path,
         flame_shape = dataset.shape_params.numpy(), # Flame shape parameter in scene info!

@@ -1,0 +1,28 @@
+name: gs4d-flame
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - cudatoolkit=11.8
+  - plyfile=0.8.1
+  - python=3.8
+  - pip
+  - pytorch=2.0.0
+  - torchvision=0.15.2
+  - tqdm
+  - pip:
+    - submodules/depth-diff-gaussian-rasterization
+    - submodules/simple-knn
+    # flame
+    - chumpy==0.70
+    - pyrender==0.1.39
+    - trimesh==3.6.18
+    - smplx
+    - numpy==1.23.4
+    - opencv-python
+    - scikit-image
+    # 4dgs
+    - lpips
+    - matplotlib
+    - mmcv==1.6.0
