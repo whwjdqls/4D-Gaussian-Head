@@ -1,0 +1,33 @@
+0
+node01
+0
+Sat Nov 18 23:15:03 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce RTX 3090         On | 00000000:E1:00.0 Off |                  N/A |
+| 39%   22C    P8               14W / 350W|      1MiB / 24576MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+Traceback (most recent call last):
+  File "../train.py", line 330, in <module>
+    config = mmcv.Config.fromfile(args.configs)
+  File "/home/whwjdqls99/anaconda3/envs/4dgs/lib/python3.8/site-packages/mmcv/utils/config.py", line 340, in fromfile
+    cfg_dict, cfg_text = Config._file2dict(filename,
+  File "/home/whwjdqls99/anaconda3/envs/4dgs/lib/python3.8/site-packages/mmcv/utils/config.py", line 183, in _file2dict
+    check_file_exist(filename)
+  File "/home/whwjdqls99/anaconda3/envs/4dgs/lib/python3.8/site-packages/mmcv/utils/path.py", line 23, in check_file_exist
+    raise FileNotFoundError(msg_tmpl.format(filename))
+FileNotFoundError: file "/home/whwjdqls99/4DGS/bash/arguments/hypernerf/default.py" does not exist

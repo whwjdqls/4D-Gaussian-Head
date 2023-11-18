@@ -28,7 +28,7 @@ from utils.sh_utils import SH2RGB
 from scene.gaussian_model import BasicPointCloud
 from utils.general_utils import PILtoTorch
 from tqdm import tqdm
-
+from scene.imavatar_dataset import FaceDataset
 from flame import FLAME, get_config
 
 class CameraInfo(NamedTuple):
