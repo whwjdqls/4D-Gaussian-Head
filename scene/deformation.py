@@ -102,8 +102,8 @@ class Deformation(nn.Module):
 class deform_network(nn.Module):
     def __init__(self, args) :
         super(deform_network, self).__init__()
-        net_width = args.net_width
-        timebase_pe = args.timebase_pe
+        net_width = args.net_width # 256 for hypernerf
+        timebase_pe = args.timebase_pe 
         defor_depth= args.defor_depth
         posbase_pe= args.posebase_pe
         scale_rotation_pe = args.scale_rotation_pe
@@ -113,7 +113,7 @@ class deform_network(nn.Module):
         times_ch = 2*timebase_pe+1
         self.timenet = nn.Sequential(
         nn.Linear(times_ch, timenet_width), nn.ReLU(),
-        nn.Linear(timenet_width, timenet_output))
+        nn.Linear(timenet_width, timenet_output)) # net width 64 / defor_depth = 1 / 
         self.deformation_net = Deformation(W=net_width, D=defor_depth, input_ch=(4+3)+((4+3)*scale_rotation_pe)*2, input_ch_time=timenet_output, args=args)
         self.register_buffer('time_poc', torch.FloatTensor([(2**i) for i in range(timebase_pe)]))
         self.register_buffer('pos_poc', torch.FloatTensor([(2**i) for i in range(posbase_pe)]))
