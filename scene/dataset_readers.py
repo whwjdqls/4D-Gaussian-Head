@@ -504,7 +504,7 @@ def readdynerfInfo(datadir,use_bg_points,eval):
                            )
     return scene_info
 
-def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810'], train_sample_rate = 1, test_sample_rate = None, ply_path = None, use_mean_globalrotpose = True, use_mean_expression = False, device = 'cuda'):
+def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810'], train_length= None, train_sample_rate = 1, test_sample_rate = None, ply_path = None, use_mean_globalrotpose = True, use_mean_expression = False, device = 'cuda'):
 
     dataset = FaceDataset(
         data_folder = data_path,
@@ -526,6 +526,10 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
     train_cam_infos = []
     test_cam_infos = []
     data_num = len(dataset.data['img_name'])
+    # if No train length
+    if train_length == None or train_length == 0:
+        train_length = data_num
+    
     # If No test Set
     if test_sample_rate == None or test_sample_rate == 0:
         test_sample_rate = data_num+ 1 
@@ -548,7 +552,7 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
                 flame_pose = dataset.data['flame_pose'][i].numpy(),
                 flame_expression = dataset.data['expressions'][i].numpy(),
                 flame_shape = dataset.shape_params.numpy(),
-                time = float(i) /float(data_num)
+                time = float(i) /float(train_length)
             )
 
             # Test set sample: train 중에서 test_sample_rate마다 가져옴
@@ -556,6 +560,9 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
                 train_cam_infos += [cam_info]
             else:
                 test_cam_infos += [cam_info]
+            
+            if len(train_cam_infos) >= train_length:
+                break
     maxtime = len(train_cam_infos) + len(test_cam_infos)
     print(f"train: {len(train_cam_infos)}, test: {len(test_cam_infos)}")
 

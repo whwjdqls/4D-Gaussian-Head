@@ -2,7 +2,7 @@
 .vscode
 */
 */__pycache__
-output
+/output
 build
 diff_rasterization/diff_rast.egg-info
 diff_rasterization/dist

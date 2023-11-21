@@ -53,7 +53,7 @@ class Scene:
             scene_info = sceneLoadTypeCallbacks["nerfies"](args.source_path, False, args.eval)
         elif os.path.exists(os.path.join(args.source_path, "yufeng")):
             print("Found yufeng folder, assuming IMAvatar set!")
-            scene_info = sceneLoadTypeCallbacks["IMAvatar"](args.source_path, sub_dir=args.scene ,train_sample_rate = args.train_sample_rate,test_sample_rate = args.test_sample_rate, use_mean_expression = False)
+            scene_info = sceneLoadTypeCallbacks["IMAvatar"](args.source_path, sub_dir=args.scene ,train_length = args.train_length, train_sample_rate = args.train_sample_rate,test_sample_rate = args.test_sample_rate, use_mean_expression = False)
         else:
             assert False, "Could not recognize scene type!"
         self.maxtime = scene_info.maxtime
