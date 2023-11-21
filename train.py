@@ -225,9 +225,9 @@ def training(dataset, hyper, opt, pipe, testing_iterations, saving_iterations, c
     timer = Timer()
     scene = Scene(dataset, gaussians, load_coarse=None)
     timer.start()
-    # scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_iterations,
-    #                          checkpoint_iterations, checkpoint, debug_from,
-    #                          gaussians, scene, "coarse", tb_writer, opt.coarse_iterations,timer)
+    scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_iterations,
+                             checkpoint_iterations, checkpoint, debug_from,
+                             gaussians, scene, "coarse", tb_writer, opt.coarse_iterations,timer)
     scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_iterations,
                          checkpoint_iterations, checkpoint, debug_from,
                          gaussians, scene, "fine", tb_writer, opt.iterations,timer)
@@ -351,8 +351,6 @@ if __name__ == "__main__":
     torch.autograd.set_detect_anomaly(args.detect_anomaly)
     # lp -> Scene(modelparam) -> dataset read
     # hp -> gaussian_model(modelhiddenparam) -> deform net
-    # print(hp.flame_dims)
-    # print(hp.extract(args).flame_dims)
     training(lp.extract(args), hp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from, args.expname)
 
     # All done

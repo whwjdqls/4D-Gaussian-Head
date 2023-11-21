@@ -29,21 +29,27 @@ class Deformation(nn.Module):
 
     # 수정 args input 추가
     def create_net(self,args):
-        
-        # 수정 # flame net 추가
-        if args.flame_dims[1] != 0:
-            self.flame_net = nn.Sequential(
-                nn.Linear(args.flame_dims[0], args.flame_dims[1])
-            )
-            print('flame_net 추가됨')
+
+        # 수정 # flame net 추가    
+        if hasattr(args, 'flame_dims'):
+            if args.flame_dims[1] != 0:
+                self.flame_net = nn.Sequential(
+                    nn.Linear(args.flame_dims[0], args.flame_dims[1])
+                )
+                flame_net_out = args.flame_dims[1]
+                print('flame_net 추가됨')
+            else:
+                self.flame_net = None
+                flame_net_out = 0
         else:
             self.flame_net = None
+            flame_net_out = 0
 
         mlp_out_dim = 0
         if self.no_grid:
-            self.feature_out = [nn.Linear(4+ args.flame_dims[1],self.W)]
+            self.feature_out = [nn.Linear(4+ flame_net_out,self.W)]
         else: # 수정: flame_net의 output -> mlp input dim 추가
-            self.feature_out = [nn.Linear(mlp_out_dim + self.grid.feat_dim+ args.flame_dims[1],self.W)]
+            self.feature_out = [nn.Linear(mlp_out_dim + self.grid.feat_dim+ flame_net_out,self.W)]
         
         
         for i in range(self.D-1):
