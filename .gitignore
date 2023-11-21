@@ -13,7 +13,6 @@ data
 argument/
 scripts/
 *.out
-scene/deformation.py
 /bash
 /assets
 *.sh

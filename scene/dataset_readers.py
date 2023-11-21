@@ -504,7 +504,7 @@ def readdynerfInfo(datadir,use_bg_points,eval):
                            )
     return scene_info
 
-def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810'], test_sample_rate = None, ply_path = None, use_mean_globalrotpose = True, use_mean_expression = False, maxtime = 300, device = 'cuda'):
+def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810'], train_sample_rate = 1, test_sample_rate = None, ply_path = None, use_mean_globalrotpose = True, use_mean_expression = False, device = 'cuda'):
 
     dataset = FaceDataset(
         data_folder = data_path,
@@ -530,32 +530,35 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
     if test_sample_rate == None or test_sample_rate == 0:
         test_sample_rate = data_num+ 1 
     
-
+    maxtime = data_num // train_sample_rate
     for i in range(data_num):
         # 코드 주석에, cam_pose = world_mat = extrinsic!
-        cam_info = CameraInfo_Flame(
-            uid = 1, 
-            R = dataset.data['world_mats'][i][:,:3].T.numpy(),  # extrinsic의 R 저장 : 3dgs format
-            T = dataset.data['world_mats'][i][:,3].numpy(), # extrinsic의 t 저장 : 3dgs format
-            FovX = focal2fov(dataset.intrinsics[0,0].item(), dataset.img_res[1]),
-            FovY = focal2fov(dataset.intrinsics[1,1].item(), dataset.img_res[0]),
-            image = PILtoTorch(Image.open(dataset.data['image_paths'][i]), None),
-            image_path = dataset.data['image_paths'][i],
-            image_name = dataset.data['img_name'][i],
-            width = dataset.img_res[1],
-            height = dataset.img_res[0],
-            object_mask = dataset.data['masks'][i].reshape(dataset.img_res).numpy(),
-            flame_pose = dataset.data['flame_pose'][i].numpy(),
-            flame_expression = dataset.data['expressions'][i].numpy(),
-            flame_shape = dataset.shape_params.numpy(),
-            time = float(i) /float(data_num)
-        )
-        # Test set sample
-        if (i+1) % test_sample_rate != 0:
-            train_cam_infos += [cam_info]
-        else:
-            test_cam_infos += [cam_info]
-        
+        if i % train_sample_rate == 0:
+            cam_info = CameraInfo_Flame(
+                uid = 1, 
+                R = dataset.data['world_mats'][i][:,:3].T.numpy(),  # extrinsic의 R 저장 : 3dgs format
+                T = dataset.data['world_mats'][i][:,3].numpy(), # extrinsic의 t 저장 : 3dgs format
+                FovX = focal2fov(dataset.intrinsics[0,0].item(), dataset.img_res[1]),
+                FovY = focal2fov(dataset.intrinsics[1,1].item(), dataset.img_res[0]),
+                image = PILtoTorch(Image.open(dataset.data['image_paths'][i]), None),
+                image_path = dataset.data['image_paths'][i],
+                image_name = dataset.data['img_name'][i],
+                width = dataset.img_res[1],
+                height = dataset.img_res[0],
+                object_mask = dataset.data['masks'][i].reshape(dataset.img_res).numpy(),
+                flame_pose = dataset.data['flame_pose'][i].numpy(),
+                flame_expression = dataset.data['expressions'][i].numpy(),
+                flame_shape = dataset.shape_params.numpy(),
+                time = float(i) /float(data_num)
+            )
+
+            # Test set sample
+            if (len(train_cam_infos)+len(test_cam_infos)+1) % test_sample_rate != 0:
+                train_cam_infos += [cam_info]
+            else:
+                test_cam_infos += [cam_info]
+    print(f"train: {len(train_cam_infos)}, test: {len(test_cam_infos)}")
+
     nerf_normalization = getNerfppNorm(train_cam_infos)
     # manual fix
     nerf_normalization['radius'] = 0.15
@@ -633,7 +636,7 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
         flame_shape = dataset.shape_params.numpy(), # Flame shape parameter in scene info!
         maxtime = maxtime
         )
-    
+        
     return scene_info
 
 sceneLoadTypeCallbacks = {
@@ -642,5 +645,4 @@ sceneLoadTypeCallbacks = {
     "dynerf" : readdynerfInfo,
     "IMAvatar" : readIMAvatarInfo,
     "nerfies": readHyperDataInfos,  # NeRFies & HyperNeRF dataset proposed by [https://github.com/google/hypernerf/releases/tag/v0.1]
-
 }
