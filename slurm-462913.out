@@ -1,9 +1,0 @@
-0
-node02
-0
-Traceback (most recent call last):
-  File "train.py", line 16, in <module>
-    from utils.loss_utils import l1_loss, ssim, l2_loss, lpips_loss
-  File "/home/qkrwlgh0314/head/4DGS/utils/loss_utils.py", line 16, in <module>
-    import lpips
-ModuleNotFoundError: No module named 'lpips'

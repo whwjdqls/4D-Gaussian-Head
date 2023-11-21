@@ -557,14 +557,15 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
             test_cam_infos += [cam_info]
         
     nerf_normalization = getNerfppNorm(train_cam_infos)
-
+    # manual fix
     nerf_normalization['radius'] = 0.15
-    
+
     # pcd init
     if ply_path == None:
         ply_path = dataset.gt_dir + '/point_cloud.ply'
         
-    if os.path.exists(ply_path):
+    if False: # 일단 항상 생성하는 걸로!
+    # if os.path.exists(ply_path):
         pcd = fetchPly(ply_path)
     else: # point cloud init w/ flame
         print("no ply file, init with flame")
@@ -596,9 +597,18 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
                 eye_pose=pose_params[:, 9:].to(device),
                 transl=None,
             )
-        flame.cpu()
         # Vertex!
-        vertices = vertices.squeeze(0).detach().cpu().numpy()
+        vertices = vertices.squeeze(0)
+
+        # mesh 중간 point cloud 추가
+        mesh = flame.faces
+        midpoints = flame.v_template[mesh.tolist()].mean(dim=1)
+        
+        vertices = torch.cat([vertices, midpoints], dim=0)
+        vertices = vertices.detach().cpu().numpy()
+        # Random Init
+        flame.cpu()
+
         # color random init
         shs = np.random.random((vertices.shape[0],3)) /255.0
         pcd = BasicPointCloud(

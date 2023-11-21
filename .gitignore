@@ -1,5 +1,7 @@
 *.pyc
 .vscode
+*/
+*/__pycache__
 output
 build
 diff_rasterization/diff_rast.egg-info
@@ -11,3 +13,7 @@ data
 argument/
 scripts/
 *.out
+scene/deformation.py
+/bash
+/assets
+*.sh

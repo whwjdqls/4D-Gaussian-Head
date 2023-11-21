@@ -71,7 +71,6 @@ class FaceDataset(torch.utils.data.Dataset):
         }
 
         for dir in sub_dir:
-            # yufeng 한번만 nope 원래 형식대로 가자
             instance_dir = os.path.join(data_folder, subject_name, subject_name,dir)
             assert os.path.exists(instance_dir), "Data directory {} is empty".format(instance_dir)
 

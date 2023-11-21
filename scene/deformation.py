@@ -111,6 +111,11 @@ class deform_network(nn.Module):
         timenet_width = args.timenet_width
         timenet_output = args.timenet_output
         times_ch = 2*timebase_pe+1
+        # 수정 # flame net 추가
+        self.flame_net = nn.Sequential(
+            nn.Linear(args.flame_dims[0], args.flame_dims[1])
+        )
+
         self.timenet = nn.Sequential(
         nn.Linear(times_ch, timenet_width), nn.ReLU(),
         nn.Linear(timenet_width, timenet_output)) # net width 64 / defor_depth = 1 / 
@@ -121,6 +126,12 @@ class deform_network(nn.Module):
         self.register_buffer('opacity_poc', torch.FloatTensor([(2**i) for i in range(opacity_pe)]))
         self.apply(initialize_weights)
         # print(self)
+### 수정### 
+    def forward_flame(self, point, scales=None, rotations=None, opacity=None, times_sel=None, flame =None):
+        if flame is None:
+            return self.forward(point, scales, rotations, opacity, times_sel)
+
+
 
     def forward(self, point, scales=None, rotations=None, opacity=None, times_sel=None):
         if times_sel is not None:

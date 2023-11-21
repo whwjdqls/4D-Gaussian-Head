@@ -321,6 +321,10 @@ if __name__ == "__main__":
     parser.add_argument("--start_checkpoint", type=str, default = None)
     parser.add_argument("--expname", type=str, default = "")
     parser.add_argument("--configs", type=str, default = "")
+    # 수정
+    # Flame input output dims
+    parser.add_argument("--flame_dims", type =int , default = [0,0])
+    parser.add_argument("--test_sample_rate", type = int , default = 8)
     
     args = parser.parse_args(sys.argv[1:])
     args.save_iterations.append(args.iterations)
