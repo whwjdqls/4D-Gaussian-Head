@@ -164,7 +164,7 @@ class HexPlaneField(nn.Module):
 
         pts = pts.reshape(-1, pts.shape[-1])
         features = interpolate_ms_features(
-            pts, ms_grids=self.grids,  # noqa
+            pts, ms_grids=self.grids,  
             grid_dimensions=self.grid_config[0]["grid_dimensions"],
             concat_features=self.concat_features, num_levels=None)
         if len(features) < 1:

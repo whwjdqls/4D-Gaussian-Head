@@ -530,9 +530,8 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
     if test_sample_rate == None or test_sample_rate == 0:
         test_sample_rate = data_num+ 1 
     
-    maxtime = data_num // train_sample_rate
     for i in range(data_num):
-        # 코드 주석에, cam_pose = world_mat = extrinsic!
+        # cam_pose = world_mat = extrinsic!
         if i % train_sample_rate == 0:
             cam_info = CameraInfo_Flame(
                 uid = 1, 
@@ -552,11 +551,12 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
                 time = float(i) /float(data_num)
             )
 
-            # Test set sample
+            # Test set sample: train 중에서 test_sample_rate마다 가져옴
             if (len(train_cam_infos)+len(test_cam_infos)+1) % test_sample_rate != 0:
                 train_cam_infos += [cam_info]
             else:
                 test_cam_infos += [cam_info]
+    maxtime = len(train_cam_infos) + len(test_cam_infos)
     print(f"train: {len(train_cam_infos)}, test: {len(test_cam_infos)}")
 
     nerf_normalization = getNerfppNorm(train_cam_infos)
@@ -567,7 +567,7 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
     if ply_path == None:
         ply_path = dataset.gt_dir + '/point_cloud.ply'
         
-    if False: # 일단 항상 생성하는 걸로!
+    if False: # 일단 항상 생성!
     # if os.path.exists(ply_path):
         pcd = fetchPly(ply_path)
     else: # point cloud init w/ flame
@@ -603,13 +603,12 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
         # Vertex!
         vertices = vertices.squeeze(0)
 
-        # mesh 중간 point cloud 추가
+        # mesh 무게중심 -> point cloud 추가
         mesh = flame.faces
         midpoints = flame.v_template[mesh.tolist()].mean(dim=1)
         
         vertices = torch.cat([vertices, midpoints], dim=0)
         vertices = vertices.detach().cpu().numpy()
-        # Random Init
         flame.cpu()
 
         # color random init

@@ -46,9 +46,6 @@ class ParamGroup:
 
 class ModelParams(ParamGroup): 
     def __init__(self, parser, sentinel=False):
-        # 수정
-        self.train_sample_rate = 5
-        self.test_sample_rate = 8
         self.sh_degree = 3
         self._source_path = ""
         self._model_path = ""
@@ -73,9 +70,6 @@ class PipelineParams(ParamGroup):
         super().__init__(parser, "Pipeline Parameters")
 class ModelHiddenParams(ParamGroup):
     def __init__(self, parser):
-        # 수정
-        self.flame_dims = [65,0]
-
         self.net_width = 64
         self.timebase_pe = 4
         self.defor_depth = 1
@@ -105,6 +99,9 @@ class ModelHiddenParams(ParamGroup):
         
 class OptimizationParams(ParamGroup):
     def __init__(self, parser):
+        # 수정
+        self.max_gaussians = 1000000000
+
         self.dataloader=False
         self.iterations = 30_000
         self.coarse_iterations = 3000

@@ -185,18 +185,20 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
                 # Keep track of max radii in image-space for pruning
                 gaussians.max_radii2D[visibility_filter] = torch.max(gaussians.max_radii2D[visibility_filter], radii[visibility_filter])
                 gaussians.add_densification_stats(viewspace_point_tensor_grad, visibility_filter)
+                
+                if gaussians.get_xyz.shape[0] < opt.max_gaussians:
+                    if stage == "coarse":
+                        opacity_threshold = opt.opacity_threshold_coarse
+                        densify_threshold = opt.densify_grad_threshold_coarse
+                    else:    
+                        opacity_threshold = opt.opacity_threshold_fine_init - iteration*(opt.opacity_threshold_fine_init - opt.opacity_threshold_fine_after)/(opt.densify_until_iter)  
+                        densify_threshold = opt.densify_grad_threshold_fine_init - iteration*(opt.densify_grad_threshold_fine_init - opt.densify_grad_threshold_after)/(opt.densify_until_iter )  
 
-                if stage == "coarse":
-                    opacity_threshold = opt.opacity_threshold_coarse
-                    densify_threshold = opt.densify_grad_threshold_coarse
-                else:    
-                    opacity_threshold = opt.opacity_threshold_fine_init - iteration*(opt.opacity_threshold_fine_init - opt.opacity_threshold_fine_after)/(opt.densify_until_iter)  
-                    densify_threshold = opt.densify_grad_threshold_fine_init - iteration*(opt.densify_grad_threshold_fine_init - opt.densify_grad_threshold_after)/(opt.densify_until_iter )  
-
-                if iteration > opt.densify_from_iter and iteration % opt.densification_interval == 0 :
-                    size_threshold = 20 if iteration > opt.opacity_reset_interval else None
+                    if iteration > opt.densify_from_iter and iteration % opt.densification_interval == 0 :
+                        size_threshold = 20 if iteration > opt.opacity_reset_interval else None
+                        
+                        gaussians.densify(densify_threshold, opacity_threshold, scene.cameras_extent, size_threshold)
                     
-                    gaussians.densify(densify_threshold, opacity_threshold, scene.cameras_extent, size_threshold)
                 if iteration > opt.pruning_from_iter and iteration % opt.pruning_interval == 0:
                     size_threshold = 20 if iteration > opt.opacity_reset_interval else None
 
@@ -321,17 +323,26 @@ if __name__ == "__main__":
     parser.add_argument("--start_checkpoint", type=str, default = None)
     parser.add_argument("--expname", type=str, default = "")
     parser.add_argument("--configs", type=str, default = "")
-    # 수정
-    # argument init.py 에 hyper param 추가(train/test sample rate,flame_dim)
+    
     args = parser.parse_args(sys.argv[1:])
     args.save_iterations.append(args.iterations)
+    # cfg -> args
     if args.configs:
         import mmcv
         from utils.params_utils import merge_hparams
         config = mmcv.Config.fromfile(args.configs)
-        args = merge_hparams(args, config)
+        args = merge_hparams(args, config) 
     print("Optimizing " + args.model_path)
 
+    # 수정: config -> params(lp, op, pp, hp)
+    # 이걸 해야 아래 extract에서 데이터셋 특화 config 값 뽑아옴   
+    from utils.params_utils import cfg2params
+    lp = cfg2params(lp, config['ModelParams'])
+    op = cfg2params(op, config['OptimizationParams'])
+    pp = cfg2params(pp, config['PipelineParams'])
+    hp = cfg2params(hp, config['ModelHiddenParams'])
+
+    
     # Initialize system state (RNG)
     safe_state(args.quiet)
 
@@ -340,12 +351,8 @@ if __name__ == "__main__":
     torch.autograd.set_detect_anomaly(args.detect_anomaly)
     # lp -> Scene(modelparam) -> dataset read
     # hp -> gaussian_model(modelhiddenparam) -> deform net
-    try:
-        print(args.test_sample_rate)
-        print(args.train_sample_rate)
-        print(args.flame_dims)
-    except:
-        pass
+    # print(hp.flame_dims)
+    # print(hp.extract(args).flame_dims)
     training(lp.extract(args), hp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from, args.expname)
 
     # All done
