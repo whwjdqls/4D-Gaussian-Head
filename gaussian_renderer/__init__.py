@@ -55,9 +55,18 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     # add deformation to each points
     # deformation = pc.get_deformation
     means3D = pc.get_xyz
-    time = torch.tensor(viewpoint_camera.time).to(means3D.device).repeat(means3D.shape[0],1)
     means2D = screenspace_points
     opacity = pc._opacity
+    time = torch.tensor(viewpoint_camera.time).to(means3D.device).repeat(means3D.shape[0],1)
+    
+    # 수정: flame_emb 받아오기
+    try: 
+        flame_pose = torch.tensor(viewpoint_camera.flame_pose)
+        flame_expression = torch.tensor(viewpoint_camera.flame_expression)
+        flame_emb = torch.cat([flame_pose, flame_expression], dim=-1)
+        flame_emb = flame_emb.to(means3D.device).repeat(means3D.shape[0],1)
+    except:
+        flame_emb = None
 
     # If precomputed 3d covariance is provided, use it. If not, then it will be computed from
     # scaling / rotation by the rasterizer.
@@ -72,10 +81,16 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     deformation_point = pc._deformation_table
     if stage == "coarse" :
         means3D_deform, scales_deform, rotations_deform, opacity_deform = means3D, scales, rotations, opacity
-    else:
+    elif flame_emb is None:
         means3D_deform, scales_deform, rotations_deform, opacity_deform = pc._deformation(means3D[deformation_point], scales[deformation_point], 
                                                                          rotations[deformation_point], opacity[deformation_point],
-                                                                         time[deformation_point])
+                                                                         time[deformation_point]
+                                                                         )
+    elif flame_emb is not None: # 수정: flame deform
+        means3D_deform, scales_deform, rotations_deform, opacity_deform = pc._deformation(means3D[deformation_point], scales[deformation_point], 
+                                                                         rotations[deformation_point], opacity[deformation_point],
+                                                                         time[deformation_point], flame_emb[deformation_point] # 수정 flame_emb 추가
+                                                                         )
     # print(time.max())
     with torch.no_grad():
         pc._deformation_accum[deformation_point] += torch.abs(means3D_deform-means3D[deformation_point])

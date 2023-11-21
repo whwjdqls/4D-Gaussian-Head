@@ -185,26 +185,28 @@ def scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_i
                 # Keep track of max radii in image-space for pruning
                 gaussians.max_radii2D[visibility_filter] = torch.max(gaussians.max_radii2D[visibility_filter], radii[visibility_filter])
                 gaussians.add_densification_stats(viewspace_point_tensor_grad, visibility_filter)
+                
+                if gaussians.get_xyz.shape[0] < opt.max_gaussians:
+                    if stage == "coarse":
+                        opacity_threshold = opt.opacity_threshold_coarse
+                        densify_threshold = opt.densify_grad_threshold_coarse
+                    else:    
+                        opacity_threshold = opt.opacity_threshold_fine_init - iteration*(opt.opacity_threshold_fine_init - opt.opacity_threshold_fine_after)/(opt.densify_until_iter)  
+                        densify_threshold = opt.densify_grad_threshold_fine_init - iteration*(opt.densify_grad_threshold_fine_init - opt.densify_grad_threshold_after)/(opt.densify_until_iter )  
 
-                if stage == "coarse":
-                    opacity_threshold = opt.opacity_threshold_coarse
-                    densify_threshold = opt.densify_grad_threshold_coarse
-                else:    
-                    opacity_threshold = opt.opacity_threshold_fine_init - iteration*(opt.opacity_threshold_fine_init - opt.opacity_threshold_fine_after)/(opt.densify_until_iter)  
-                    densify_threshold = opt.densify_grad_threshold_fine_init - iteration*(opt.densify_grad_threshold_fine_init - opt.densify_grad_threshold_after)/(opt.densify_until_iter )  
-
-                if iteration > opt.densify_from_iter and iteration % opt.densification_interval == 0 :
-                    size_threshold = 20 if iteration > opt.opacity_reset_interval else None
+                    if iteration > opt.densify_from_iter and iteration % opt.densification_interval == 0 :
+                        size_threshold = 20 if iteration > opt.opacity_reset_interval else None
+                        
+                        gaussians.densify(densify_threshold, opacity_threshold, scene.cameras_extent, size_threshold)
                     
-                    gaussians.densify(densify_threshold, opacity_threshold, scene.cameras_extent, size_threshold)
                 if iteration > opt.pruning_from_iter and iteration % opt.pruning_interval == 0:
                     size_threshold = 20 if iteration > opt.opacity_reset_interval else None
 
                     gaussians.prune(densify_threshold, opacity_threshold, scene.cameras_extent, size_threshold)
                     
-                if iteration % opt.opacity_reset_interval == 0 or (dataset.white_background and iteration == opt.densify_from_iter):
-                    print("reset opacity")
-                    gaussians.reset_opacity()
+                # if iteration % opt.opacity_reset_interval == 0 or (dataset.white_background and iteration == opt.densify_from_iter):
+                #     print("reset opacity")
+                #     # gaussians.reset_opacity()
                     
 
             # Optimizer step
@@ -223,9 +225,9 @@ def training(dataset, hyper, opt, pipe, testing_iterations, saving_iterations, c
     timer = Timer()
     scene = Scene(dataset, gaussians, load_coarse=None)
     timer.start()
-    scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_iterations,
-                             checkpoint_iterations, checkpoint, debug_from,
-                             gaussians, scene, "coarse", tb_writer, opt.coarse_iterations,timer)
+    # scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_iterations,
+    #                          checkpoint_iterations, checkpoint, debug_from,
+    #                          gaussians, scene, "coarse", tb_writer, opt.coarse_iterations,timer)
     scene_reconstruction(dataset, opt, hyper, pipe, testing_iterations, saving_iterations,
                          checkpoint_iterations, checkpoint, debug_from,
                          gaussians, scene, "fine", tb_writer, opt.iterations,timer)
@@ -317,30 +319,40 @@ if __name__ == "__main__":
     parser.add_argument("--test_iterations", nargs="+", type=int, default=[i*500 for i in range(0,120)])
     parser.add_argument("--save_iterations", nargs="+", type=int, default=[2000, 3000, 7_000, 8000, 9000, 14000, 20000, 30_000,45000,60000])
     parser.add_argument("--quiet", action="store_true")
-    parser.add_argument("--checkpoint_iterations", nargs="+", type=int, default=[])
+    parser.add_argument("--checkpoint_iterations", nargs="+", type=int, default=[5000, 10000, 15000, 20000, 25000, 30000,35000, 40000, 45000, 50000, 55000,60000])
     parser.add_argument("--start_checkpoint", type=str, default = None)
     parser.add_argument("--expname", type=str, default = "")
     parser.add_argument("--configs", type=str, default = "")
-    # 수정
-    # Flame input output dims
-    parser.add_argument("--flame_dims", type =int , default = [0,0])
-    parser.add_argument("--test_sample_rate", type = int , default = 8)
     
     args = parser.parse_args(sys.argv[1:])
     args.save_iterations.append(args.iterations)
+    # cfg -> args
     if args.configs:
         import mmcv
         from utils.params_utils import merge_hparams
         config = mmcv.Config.fromfile(args.configs)
-        args = merge_hparams(args, config)
+        args = merge_hparams(args, config) 
     print("Optimizing " + args.model_path)
 
+    # 수정: config -> params(lp, op, pp, hp)
+    # 이걸 해야 아래 extract에서 데이터셋 특화 config 값 뽑아옴   
+    from utils.params_utils import cfg2params
+    lp = cfg2params(lp, config['ModelParams'])
+    op = cfg2params(op, config['OptimizationParams'])
+    pp = cfg2params(pp, config['PipelineParams'])
+    hp = cfg2params(hp, config['ModelHiddenParams'])
+
+    
     # Initialize system state (RNG)
     safe_state(args.quiet)
 
     # Start GUI server, configure and run training
     network_gui.init(args.ip, args.port)
     torch.autograd.set_detect_anomaly(args.detect_anomaly)
+    # lp -> Scene(modelparam) -> dataset read
+    # hp -> gaussian_model(modelhiddenparam) -> deform net
+    # print(hp.flame_dims)
+    # print(hp.extract(args).flame_dims)
     training(lp.extract(args), hp.extract(args), op.extract(args), pp.extract(args), args.test_iterations, args.save_iterations, args.checkpoint_iterations, args.start_checkpoint, args.debug_from, args.expname)
 
     # All done

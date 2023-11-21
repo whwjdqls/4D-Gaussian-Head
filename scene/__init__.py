@@ -53,7 +53,7 @@ class Scene:
             scene_info = sceneLoadTypeCallbacks["nerfies"](args.source_path, False, args.eval)
         elif os.path.exists(os.path.join(args.source_path, "yufeng")):
             print("Found yufeng folder, assuming IMAvatar set!")
-            scene_info = sceneLoadTypeCallbacks["IMAvatar"](args.source_path, test_sample_rate = args.test_sample_rate, use_mean_expression = False, maxtime = 300)
+            scene_info = sceneLoadTypeCallbacks["IMAvatar"](args.source_path, sub_dir=args.scene ,train_sample_rate = args.train_sample_rate,test_sample_rate = args.test_sample_rate, use_mean_expression = False)
         else:
             assert False, "Could not recognize scene type!"
         self.maxtime = scene_info.maxtime
@@ -93,7 +93,9 @@ class Scene:
         self.video_camera = cameraList_from_camInfos(scene_info.video_cameras,-1,args)
         xyz_max = scene_info.point_cloud.points.max(axis=0)
         xyz_min = scene_info.point_cloud.points.min(axis=0)
-        self.gaussians._deformation.deformation_net.grid.set_aabb(xyz_max,xyz_min)
+        # 수정: grid set_aabb 확장
+        # self.gaussians._deformation.deformation_net.grid.set_aabb(xyz_max,xyz_min)
+        self.gaussians._deformation.deformation_net.grid.set_aabb(xyz_max*2,xyz_min*2)
         if self.loaded_iter:
             self.gaussians.load_ply(os.path.join(self.model_path,
                                                            "point_cloud",

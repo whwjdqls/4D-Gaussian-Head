@@ -99,6 +99,9 @@ class ModelHiddenParams(ParamGroup):
         
 class OptimizationParams(ParamGroup):
     def __init__(self, parser):
+        # 수정
+        self.max_gaussians = 1000000000
+
         self.dataloader=False
         self.iterations = 30_000
         self.coarse_iterations = 3000
