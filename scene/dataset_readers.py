@@ -504,7 +504,7 @@ def readdynerfInfo(datadir,use_bg_points,eval):
                            )
     return scene_info
 
-def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810','MVI_1811','MVI_1812','MVI_1814'], test_sample_rate = None, ply_path = None, use_mean_globalrotpose = True, use_mean_expression = False, maxtime = 300, device = 'cuda'):
+def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810'], test_sample_rate = None, ply_path = None, use_mean_globalrotpose = True, use_mean_expression = False, maxtime = 300, device = 'cuda'):
 
     dataset = FaceDataset(
         data_folder = data_path,
@@ -558,6 +558,8 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
         
     nerf_normalization = getNerfppNorm(train_cam_infos)
 
+    nerf_normalization['radius'] = 0.15
+    
     # pcd init
     if ply_path == None:
         ply_path = dataset.gt_dir + '/point_cloud.ply'
