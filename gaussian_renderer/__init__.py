@@ -61,13 +61,13 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     
     # 수정: flame_emb 받아오기
     try: 
-        flame_pose = torch.tensor(viewpoint_camera.flame_pose)
-        flame_expression = torch.tensor(viewpoint_camera.flame_expression)
+        flame_pose = torch.tensor(viewpoint_camera.flame_pose, dtype = torch.float32)
+        flame_expression = torch.tensor(viewpoint_camera.flame_expression, dtype = torch.float32)
         flame_emb = torch.cat([flame_pose, flame_expression], dim=-1)
         flame_emb = flame_emb.to(means3D.device).repeat(means3D.shape[0],1)
     except:
         flame_emb = None
-
+        
     # If precomputed 3d covariance is provided, use it. If not, then it will be computed from
     # scaling / rotation by the rasterizer.
     scales = None

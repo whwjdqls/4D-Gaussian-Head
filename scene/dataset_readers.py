@@ -55,11 +55,12 @@ class CameraInfo_Flame(NamedTuple):
     image_name: str
     width: int
     height: int
+    time : float
     object_mask : np.array
     flame_pose : np.array
     flame_expression : np.array
     flame_shape : np.array
-    time : float
+
    
 class SceneInfo(NamedTuple):
     point_cloud: BasicPointCloud
@@ -309,11 +310,53 @@ def readCamerasFromTransforms(path, transformsfile, white_background, extension=
             FovY = fovy 
             FovX = fovx
 
-            cam_infos.append(CameraInfo(uid=idx, R=R, T=T, FovY=FovY, FovX=FovX, image=image,
+            cam_infos.append(CameraInfo_Flame(uid=idx, R=R, T=T, FovY=FovY, FovX=FovX, image=image,
                             image_path=image_path, image_name=image_name, width=image.shape[1], height=image.shape[2],
-                            time = time))
+                            time = time,
+                            object_mask = np.array([]),
+                            flame_pose = np.array([]),
+                            flame_expression = np.array(frame['expression']),
+                            flame_shape = np.array([])
+                            ))
             
     return cam_infos
+# def readCamerasFromTransforms(path, transformsfile, white_background, extension=".png", mapper = {}):
+#     cam_infos = []
+
+#     with open(os.path.join(path, transformsfile)) as json_file:
+#         contents = json.load(json_file)
+#         fovx = contents["camera_angle_x"]
+
+#         frames = contents["frames"]
+#         for idx, frame in enumerate(frames):
+#             cam_name = os.path.join(path, frame["file_path"] + extension)
+#             time = mapper[frame["time"]]
+#             matrix = np.linalg.inv(np.array(frame["transform_matrix"]))
+#             R = -np.transpose(matrix[:3,:3])
+#             R[:,0] = -R[:,0]
+#             T = -matrix[:3, 3]
+
+#             image_path = os.path.join(path, cam_name)
+#             image_name = Path(cam_name).stem
+#             image = Image.open(image_path)
+
+#             im_data = np.array(image.convert("RGBA"))
+
+#             bg = np.array([1,1,1]) if white_background else np.array([0, 0, 0])
+
+#             norm_data = im_data / 255.0
+#             arr = norm_data[:,:,:3] * norm_data[:, :, 3:4] + bg * (1 - norm_data[:, :, 3:4])
+#             image = Image.fromarray(np.array(arr*255.0, dtype=np.byte), "RGB")
+#             image = PILtoTorch(image,(800,800))
+#             fovy = focal2fov(fov2focal(fovx, image.shape[1]), image.shape[2])
+#             FovY = fovy 
+#             FovX = fovx
+
+#             cam_infos.append(CameraInfo(uid=idx, R=R, T=T, FovY=FovY, FovX=FovX, image=image,
+#                             image_path=image_path, image_name=image_name, width=image.shape[1], height=image.shape[2],
+#                             time = time))
+            
+#     return cam_infos
 def read_timeline(path):
     with open(os.path.join(path, "transforms_train.json")) as json_file:
         train_json = json.load(json_file)
@@ -330,6 +373,7 @@ def read_timeline(path):
         timestamp_mapper[time] = time/max_time_float
 
     return timestamp_mapper, max_time_float
+# 수정: Expression 사용!!
 def readNerfSyntheticInfo(path, white_background, eval, extension=".png"):
     timestamp_mapper, max_time = read_timeline(path)
     print("Reading Training Transforms")
@@ -337,7 +381,8 @@ def readNerfSyntheticInfo(path, white_background, eval, extension=".png"):
     print("Reading Test Transforms")
     test_cam_infos = readCamerasFromTransforms(path, "transforms_test.json", white_background, extension, timestamp_mapper)
     print("Generating Video Transforms")
-    video_cam_infos = generateCamerasFromTransforms(path, "transforms_train.json", extension, max_time)
+    video_cam_infos = train_cam_infos
+    # video_cam_infos = generateCamerasFromTransforms(path, "transforms_train.json", extension, max_time)
     if not eval:
         train_cam_infos.extend(test_cam_infos)
         test_cam_infos = []
@@ -353,6 +398,8 @@ def readNerfSyntheticInfo(path, white_background, eval, extension=".png"):
     xyz = np.random.random((num_pts, 3)) * 2.6 - 1.3
     shs = np.random.random((num_pts, 3)) / 255.0
     pcd = BasicPointCloud(points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3)))
+    # 수정: scratch writing 권한 X -> 현위치 write
+    ply_path = os.getcwd() + "/points3d.ply" 
     storePly(ply_path, xyz, SH2RGB(shs) * 255)
     try:
         pcd = fetchPly(ply_path)
