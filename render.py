@@ -107,6 +107,13 @@ if __name__ == "__main__":
         from utils.params_utils import merge_hparams
         config = mmcv.Config.fromfile(args.configs)
         args = merge_hparams(args, config)
+    # 수정: config 추가
+    from utils.params_utils import cfg2params
+    model = cfg2params(model, config['ModelParams'])
+    # op = cfg2params(op, config['OptimizationParams'])
+    pipeline = cfg2params(pipeline, config['PipelineParams'])
+    hyperparam = cfg2params(hyperparam, config['ModelHiddenParams'])
+
     # Initialize system state (RNG)
     safe_state(args.quiet)
 
