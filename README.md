@@ -1,7 +1,7 @@
 # 4D Gaussian Head Reconstruction
 ## ⭐Project in 3rd YAICON⭐
 
-<img src="[](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/45ce1ef2-0ea7-461e-93a7-63e062238c94)" width="48">
+<img src="[](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/45ce1ef2-0ea7-461e-93a7-63e062238c94)" width=50% height=50%>
 
 
 
