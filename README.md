@@ -3,7 +3,7 @@
 
 
 
-![block](assets/1.png)   
+![block]([assets/1.png](https://github.com/whwjdqls/4D-Gaussian-Head/issues/3#issue-2033692875))   
 
 
 
