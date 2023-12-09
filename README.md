@@ -12,7 +12,7 @@
 
 
 <video width="320" height="240" controls>
-  <source src="https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5" type="video/mp4">
+  <source src="(https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)" type="video/mp4">
 </video>
 
 
