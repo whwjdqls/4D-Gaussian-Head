@@ -5,11 +5,11 @@
 ![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/6434802a-eb37-40d0-9d2a-7749bc618f04)
 
 
-<video width="320" height="240" controls>
+<video width="720" height="720" controls>
   <source src="assets/teaservideo.mp4" type="video/mp4">
 </video>
 
-<video width="320" height="240" controls>
+<video width="720" height="720" controls>
   <source src="assets/wo_expression.mp4" type="video/mp4">
 </video>
 
