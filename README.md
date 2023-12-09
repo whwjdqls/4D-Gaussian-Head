@@ -5,13 +5,6 @@
 
 ![block](assets/1.png)   
 
-<video width="320" height="240" controls>
-  <source src="assets/teaservideo.mp4" type="video/mp4">
-</video>
-
-<video width="320" height="240" controls>
-  <source src="assets/cut_roasted_beef_time.mp4" type="video/mp4">
-</video>
 
 
 ## Environmental Setups
