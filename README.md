@@ -5,16 +5,13 @@
 ![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/6434802a-eb37-40d0-9d2a-7749bc618f04)
 
 
-
 <video width="320" height="240" controls>
-  <source src="[](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/7630db00-ac7a-4ccd-a9d4-e7a541b31850)" type="video/mp4">
+  <source src="assets/w_expression.mp4" type="video/mp4">
 </video>
 
-
 <video width="320" height="240" controls>
-  <source src="(https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)" type="video/mp4">
+  <source src="assets/wo_expression.mp4" type="video/mp4">
 </video>
-
 
 
 ## Environmental Setups
