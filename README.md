@@ -5,13 +5,8 @@
 ![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/6434802a-eb37-40d0-9d2a-7749bc618f04)
 
 
-<video width="720" height="720" controls>
-  <source src="assets/teaservideo.mp4" type="video/mp4">
-</video>
 
-<video width="720" height="720" controls>
-  <source src="assets/wo_expression.mp4" type="video/mp4">
-</video>
+</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)
 
 
 ## Environmental Setups
