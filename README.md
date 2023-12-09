@@ -2,6 +2,13 @@
 ## ⭐Project in 3rd YAICON⭐
 
 ![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/45ce1ef2-0ea7-461e-93a7-63e062238c94)
+<video width="320" height="240" controls>
+  <source src="[assets/teaservideo.mp4](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/7b5eda41-0f61-471b-afcb-5adc61aee8db)" type="video/mp4">
+</video>
+
+
+
+https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5
 
 
 ## Environmental Setups
