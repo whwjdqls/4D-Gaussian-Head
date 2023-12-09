@@ -1,8 +1,4 @@
-# 4D Gaussian Splatting for Real-Time Dynamic Scene Rendering
-
-## arXiv Preprint
-
-### [Project Page](https://guanjunwu.github.io/4dgs/index.html)| [arXiv Paper](https://arxiv.org/abs/2310.08528)
+# Rendering facial video with 4D dynamic gaussian splatting
 
 
 [Guanjun Wu](https://guanjunwu.github.io/)<sup>1*</sup>, [Taoran Yi](https://github.com/taoranyi)<sup>2*</sup>,
@@ -103,18 +99,12 @@ python metrics.py --model_path "output/dnerf/bouncingballs/"
 There are some helpful scripts in `scripts/`, please feel free to use them.
 
 ---
-## Contributions
-
-**This project is still under development. Please feel free to raise issues or submit pull requests to contribute to our codebase.**
 
 ---
-Some source code of ours is borrowed from [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), [k-planes](https://github.com/Giodiro/kplanes_nerfstudio),[HexPlane](https://github.com/Caoang327/HexPlane), [TiNeuVox](https://github.com/hustvl/TiNeuVox). We sincerely appreciate the excellent works of these authors.
+Some source code of ours is borrowed from [4DGS](https://github.com/hustvl/4DGaussians) [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), [k-planes](https://github.com/Giodiro/kplanes_nerfstudio),[HexPlane](https://github.com/Caoang327/HexPlane), [TiNeuVox](https://github.com/hustvl/TiNeuVox). We sincerely appreciate the excellent works of these authors.
 
-## Acknowledgement
-
-We would like to express our sincere gratitude to [@zhouzhenghong-gt](https://github.com/zhouzhenghong-gt/) for his revisions to our code and discussions on the content of our paper.
 ## Citation
-Some insights about neural voxel grids and dynamic scenes reconstruction originate from [TiNeuVox](https://github.com/hustvl/TiNeuVox). If you find this repository/work helpful in your research, welcome to cite these papers and give a ⭐. 
+This project face is a fork from 4D Gaussian Splatting for Real-Time Dynamic Scene Rendering project page. 
 ```
 @article{wu20234dgaussians,
   title={4D Gaussian Splatting for Real-Time Dynamic Scene Rendering},
@@ -123,10 +113,4 @@ Some insights about neural voxel grids and dynamic scenes reconstruction origina
   year={2023}
 }
 
-@inproceedings{TiNeuVox,
-  author = {Fang, Jiemin and Yi, Taoran and Wang, Xinggang and Xie, Lingxi and Zhang, Xiaopeng and Liu, Wenyu and Nie\ss{}ner, Matthias and Tian, Qi},
-  title = {Fast Dynamic Radiance Fields with Time-Aware Neural Voxels},
-  year = {2022},
-  booktitle = {SIGGRAPH Asia 2022 Conference Papers}
-}
 ```
