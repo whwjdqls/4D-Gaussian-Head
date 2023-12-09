@@ -1,11 +1,7 @@
 # 4D Gaussian Head Reconstruction
 ## ⭐Project in 3rd YAICON⭐
-
+<img src="[drawing.jpg](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/45ce1ef2-0ea7-461e-93a7-63e062238c94)" alt="drawing" width="200"/>
 ![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/45ce1ef2-0ea7-461e-93a7-63e062238c94)
-
-
-![block]([assets/1.png](https://github.com/whwjdqls/4D-Gaussian-Head/issues/3#issue-2033692875))   
-
 
 
 ## Environmental Setups
