@@ -6,7 +6,7 @@
 
 
 <video width="320" height="240" controls>
-  <source src="assets/w_expression.mp4" type="video/mp4">
+  <source src="assets/teaservideo.mp4" type="video/mp4">
 </video>
 
 <video width="320" height="240" controls>
