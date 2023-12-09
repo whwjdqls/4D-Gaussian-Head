@@ -6,8 +6,6 @@
 
 
 
-[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)
-
 
 ## Environmental Setups
 Please follow the [3D-GS](https://github.com/graphdeco-inria/gaussian-splatting) to install the relative packages.
@@ -71,14 +69,13 @@ python render.py --model_path "output/dnerf/bouncingballs/"  --skip_train --conf
 ```
 
 
-## Evaluation
-You can just run the following script to evaluate the model.  
+## Results
+### with out the FLAME expression prior
+[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/73209cc2-2166-4e21-ac12-c43505e98950)
+## with the FLAME expression prior
+[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)
 
-```
-python metrics.py --model_path "output/dnerf/bouncingballs/" 
-```
 
-Some source code of ours is borrowed from [4DGS](https://github.com/hustvl/4DGaussians) [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), [k-planes](https://github.com/Giodiro/kplanes_nerfstudio),[HexPlane](https://github.com/Caoang327/HexPlane), [TiNeuVox](https://github.com/hustvl/TiNeuVox). We sincerely appreciate the excellent works of these authors.
 
 ## Citation
 This project face is a fork from 4D Gaussian Splatting for Real-Time Dynamic Scene Rendering project page. 
