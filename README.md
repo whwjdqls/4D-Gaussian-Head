@@ -7,7 +7,7 @@
 
 
 <video width="320" height="240" controls>
-  <source src="[](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/7b5eda41-0f61-471b-afcb-5adc61aee8db)" type="video/mp4">
+  <source src="[(https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/7630db00-ac7a-4ccd-a9d4-e7a541b31850)" type="video/mp4">
 </video>
 
 
