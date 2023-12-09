@@ -72,13 +72,7 @@ You can just run the following script to evaluate the model.
 ```
 python metrics.py --model_path "output/dnerf/bouncingballs/" 
 ```
-## Scripts
 
-There are some helpful scripts in `scripts/`, please feel free to use them.
-
----
-
----
 Some source code of ours is borrowed from [4DGS](https://github.com/hustvl/4DGaussians) [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), [k-planes](https://github.com/Giodiro/kplanes_nerfstudio),[HexPlane](https://github.com/Caoang327/HexPlane), [TiNeuVox](https://github.com/hustvl/TiNeuVox). We sincerely appreciate the excellent works of these authors.
 
 ## Citation
