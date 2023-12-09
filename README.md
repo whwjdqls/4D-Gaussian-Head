@@ -2,14 +2,8 @@
 ## ⭐Project in 3rd YAICON⭐
 
 
----------------------------------------------------
 
----
-
-![block](assets/teaserfig.png)   
-Our method converges very quickly and achieves real-time rendering speed.
-
-Colab demo:[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hustvl/4DGaussians/blob/master/4DGaussians.ipynb) (Thanks [camenduru](https://github.com/camenduru/4DGaussians-colab).)
+![block](assets/0.png)   
 
 <video width="320" height="240" controls>
   <source src="assets/teaservideo.mp4" type="video/mp4">
