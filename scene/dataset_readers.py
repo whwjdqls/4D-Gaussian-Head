@@ -662,7 +662,14 @@ def readIMAvatarInfo(data_path='../../datasets/mono-video', sub_dir = ['MVI_1810
         midpoints = flame.v_template[mesh.tolist()].mean(dim=1)
         
         vertices = torch.cat([vertices, midpoints], dim=0)
+        # 수정!!: random init 해보자: synthetic 과 같은방식
+        rand_num_pts = 2000
+        xyz = torch.rand((rand_num_pts, 3)).to(device) * 2.6 - 1.3
+        vertices = torch.cat([vertices, xyz], dim=0)
+        #####################################
         vertices = vertices.detach().cpu().numpy()
+   
+        
         flame.cpu()
 
         # color random init

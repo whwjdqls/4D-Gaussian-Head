@@ -95,7 +95,7 @@ class Scene:
         xyz_min = scene_info.point_cloud.points.min(axis=0)
         # 수정: grid set_aabb 확장
         # self.gaussians._deformation.deformation_net.grid.set_aabb(xyz_max,xyz_min)
-        self.gaussians._deformation.deformation_net.grid.set_aabb(xyz_max*2,xyz_min*2)
+        self.gaussians._deformation.deformation_net.grid.set_aabb(xyz_max,xyz_min)
         if self.loaded_iter:
             self.gaussians.load_ply(os.path.join(self.model_path,
                                                            "point_cloud",

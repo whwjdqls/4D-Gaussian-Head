@@ -19,7 +19,7 @@ dependencies:
     - pyrender==0.1.39
     - trimesh==3.6.18
     - smplx
-    - numpy==1.23.4
+    - numpy==1.23.4 # if error -> 1.23
     - opencv-python
     - scikit-image
     # 4dgs
