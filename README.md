@@ -4,7 +4,7 @@
 
 ![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/6434802a-eb37-40d0-9d2a-7749bc618f04)
 
-
+**※ Use NF-exp branch to implement the 4D gaussian with additional input(expression)**
 
 
 ## Environmental Setups
