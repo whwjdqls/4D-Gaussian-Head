@@ -13,10 +13,9 @@
 
 ## Results
 ### Test View
-|! with out the FLAME expression prior |! with the FLAME expression prior|
+| with out the FLAME expression prior |with the FLAME expression prior|
 |:---:|:---:|
-|![</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/73209cc2-2166-4e21-ac12-c43505e98950)|![</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)|
-
+| <video width="10" height="50" src="https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/73209cc2-2166-4e21-ac12-c43505e98950" />| <video width="50" height="50" src="=https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5" />|
 
 
 **※ Use NF-exp branch to implement the 4D gaussian with additional input(expression)**
