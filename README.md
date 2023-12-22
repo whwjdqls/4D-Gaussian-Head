@@ -2,9 +2,19 @@
 ## ⭐Project in 3rd YAICON⭐
 
 
-![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/6434802a-eb37-40d0-9d2a-7749bc618f04)
+![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/6434802a-eb37-40d0-9d2a-7749bc618f04){: width="50" height="50"}
 
 **※ Use NF-exp branch to implement the 4D gaussian with additional input(expression)**
+
+
+
+## Results
+### with out the FLAME expression prior
+[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/73209cc2-2166-4e21-ac12-c43505e98950)
+## with the FLAME expression prior
+[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)
+
+
 
 
 ## Environmental Setups
@@ -67,15 +77,6 @@ Run the following script to render the images.
 ```
 python render.py --model_path "output/dnerf/bouncingballs/"  --skip_train --configs arguments/dnerf/bouncingballs.py  &
 ```
-
-
-## Results
-### with out the FLAME expression prior
-[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/73209cc2-2166-4e21-ac12-c43505e98950)
-## with the FLAME expression prior
-[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)
-
-
 
 ## Citation
 This project face is a fork from 4D Gaussian Splatting for Real-Time Dynamic Scene Rendering project page. 
