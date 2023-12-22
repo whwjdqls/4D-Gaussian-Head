@@ -2,21 +2,24 @@
 ## ⭐Project in 3rd YAICON⭐
 
 
-![1](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/6434802a-eb37-40d0-9d2a-7749bc618f04){: width="50" height="50"}
+<img src="https://github.com/whwjdqls/4D-Gaussian-Head/blob/master/assets/card1.png" width="400" height="400"/>
 
-**※ Use NF-exp branch to implement the 4D gaussian with additional input(expression)**
+<img src="https://github.com/whwjdqls/4D-Gaussian-Head/blob/master/assets/card2.png" width="400" height="400"/> <img src="https://github.com/whwjdqls/4D-Gaussian-Head/blob/master/assets/card3.png" width="400" height="400"/>
 
+<img src="https://github.com/whwjdqls/4D-Gaussian-Head/blob/master/assets/card4.png" width="400" height="400"/> <img src="https://github.com/whwjdqls/4D-Gaussian-Head/blob/master/assets/card5.png" width="400" height="400"/>
+
+<img src="https://github.com/whwjdqls/4D-Gaussian-Head/blob/master/assets/card6.png" width="400" height="400"/> <img src="https://github.com/whwjdqls/4D-Gaussian-Head/blob/master/assets/card7.png" width="400" height="400"/>
 
 
 ## Results
-### with out the FLAME expression prior
-[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/73209cc2-2166-4e21-ac12-c43505e98950)
-## with the FLAME expression prior
-[</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)
+### Test View
+|! with out the FLAME expression prior |! with the FLAME expression prior|
+|:---:|:---:|
+|![</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/73209cc2-2166-4e21-ac12-c43505e98950)|![</video>](https://github.com/whwjdqls/4D-Gaussian-Head/assets/73946308/cf82b8c5-41fe-41ba-a1fc-4996e78497d5)|
 
 
 
-
+**※ Use NF-exp branch to implement the 4D gaussian with additional input(expression)**
 ## Environmental Setups
 Please follow the [3D-GS](https://github.com/graphdeco-inria/gaussian-splatting) to install the relative packages.
 ```bash
